@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lesson4.FXMLDocumentController">
+    <SplitPane dividerPositions="0.9115281501340483" layoutX="131.0" layoutY="14.0" orientation="VERTICAL" prefHeight="375.0" prefWidth="455.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <TextFlow fx:id="myTextArea" layoutY="-1.0" prefHeight="337.0" prefWidth="453.0">
+                <Label fx:id="label" prefHeight="47.0" prefWidth="56.0" text="Label"/>
+            </TextFlow>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <Button fx:id="buttonSendMessage" layoutX="397.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="56.0" text="Send" />
+            <TextField fx:id="myTextType" layoutX="2.0" layoutY="2.0" prefHeight="25.0" prefWidth="394.0" />
+        </AnchorPane>
+    </SplitPane>
+    <Pane layoutX="8.0" layoutY="14.0" prefHeight="375.0" prefWidth="115.0">
+        <ListView fx:id="myUserList" layoutX="-3.0" prefHeight="375.0" prefWidth="122.0" />
+    </Pane>
+</AnchorPane>
