@@ -69,6 +69,15 @@ public class MyServer {
         }
     }
 
+    public synchronized void sendPrivateMessage(String username, String message) throws IOException{
+        for (ClientHandler client : clients) {
+            if(client.getNickname().equals(username)){
+                client.sendMessage(message);
+                return;
+            }
+        }
+    }
+
     public synchronized void subscribe(ClientHandler clientHandler) {
         clients.add(clientHandler);
     }

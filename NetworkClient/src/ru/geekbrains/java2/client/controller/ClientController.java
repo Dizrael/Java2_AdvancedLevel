@@ -78,6 +78,10 @@ public class ClientController {
         }
     }
 
+    public void sendPrivateMessage(String username, String message){
+        sendMessage(String.format("/w %s %s", username, message));
+    }
+
     public void shutdown() {
         networkService.close();
     }

@@ -44,7 +44,14 @@ public class ClientChat extends JFrame {
         }
 
         appendOwnMessage(message);
-        controller.sendMessage(message);
+
+        if(usersList.getSelectedIndex()<1){
+            controller.sendMessage(message);
+        }
+        else{
+            String username = usersList.getSelectedValue();
+            controller.sendPrivateMessage(username, message);
+        }
         messageTextField.setText(null);
     }
 

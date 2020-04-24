@@ -57,9 +57,19 @@ public class ClientHandler {
             String message = inputStream.readUTF();
             if (message.startsWith(END_CMD)) {
                 return;
+            } else if (message.startsWith(PRIVATE_MSG_CMD)) {
+                String[] parts = message.split("\\s+", 3);
+                String username = parts[1];
+                String privateMessage = parts[2];
+                serverInstance.sendPrivateMessage(username, buildMessage(privateMessage));
+            } else {
+                serverInstance.broadcastMessage(buildMessage(message));
             }
-            serverInstance.broadcastMessage(String.format("%s: %s", nickname, message));
         }
+    }
+
+    private String buildMessage(String message) {
+        return String.format("%s: %s", nickname, message);
     }
 
     private void authentication() throws IOException {
@@ -73,11 +83,9 @@ public class ClientHandler {
                 String nickname = authService.getNickByLoginAndPassword(login, password);
                 if (nickname == null) {
                     sendMessage("Неверные логин/пароль!");
-                }
-                else if (serverInstance.isNicknameBusy(nickname)) {
+                } else if (serverInstance.isNicknameBusy(nickname)) {
                     sendMessage("Учетная запись уже используется!");
-                }
-                else {
+                } else {
                     sendMessage(String.format("%s %s", AUTH_SUCCESSFUL_CMD, nickname));
                     setNickname(nickname);
                     serverInstance.broadcastMessage(nickname + " Зашел в чат!");
