@@ -4,6 +4,12 @@ import java.util.*;
 
 public class BaseAuthService implements AuthService {
 
+    public BaseAuthService(){
+        NICKNAME_BY_LOGIN_AND_PASS.put(new AuthEntry("login1", "pass1"), "nickname1");
+        NICKNAME_BY_LOGIN_AND_PASS.put(new AuthEntry("login2", "pass2"), "nickname2");
+        NICKNAME_BY_LOGIN_AND_PASS.put(new AuthEntry("login3", "pass3"), "nickname3");
+    }
+
     private static class AuthEntry {
         private String login;
         private String password;
@@ -29,11 +35,7 @@ public class BaseAuthService implements AuthService {
     }
 
 
-    private static final Map<AuthEntry, String> NICKNAME_BY_LOGIN_AND_PASS =Map.of(
-      new AuthEntry("login1", "pass1"), "nickname1",
-      new AuthEntry("login2", "pass2"), "nickname2",
-      new AuthEntry("login3", "pass3"), "nickname3"
-    );
+    private static final HashMap<AuthEntry, String> NICKNAME_BY_LOGIN_AND_PASS = new HashMap<>();
 
 
     @Override
