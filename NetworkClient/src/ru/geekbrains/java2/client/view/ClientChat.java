@@ -1,10 +1,12 @@
 package ru.geekbrains.java2.client.view;
 
+import com.sun.media.sound.DLSModulator;
 import ru.geekbrains.java2.client.controller.ClientController;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 public class ClientChat extends JFrame {
 
@@ -68,4 +70,17 @@ public class ClientChat extends JFrame {
     }
 
 
+    public void showError(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage);
+    }
+
+    public void updateUsers(List<String> users) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (String user : users) {
+                model.addElement(user);
+            }
+            usersList.setModel(model);
+        });
+    }
 }
