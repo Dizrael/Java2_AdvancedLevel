@@ -1,5 +1,10 @@
 package ru.geekbrains.java2.server.networkserver;
 
+import jdk.nashorn.internal.ir.LiteralNode;
+import ru.geekbrains.java2.client.Command;
+import ru.geekbrains.java2.client.command.AuthCommand;
+import ru.geekbrains.java2.client.command.MessageCommand;
+import ru.geekbrains.java2.client.command.PrivateMessageCommand;
 import ru.geekbrains.java2.server.networkserver.auth.AuthService;
 import ru.geekbrains.java2.server.networkserver.auth.BaseAuthService;
 import ru.geekbrains.java2.server.networkserver.clienthandler.ClientHandler;
@@ -9,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MyServer {
 
@@ -63,17 +69,42 @@ public class MyServer {
         return false;
     }
 
-    public synchronized void broadcastMessage(String message) throws IOException {
+    public synchronized void broadcastMessage(Command command) throws IOException {
         for (ClientHandler client : clients) {
-            client.sendMessage(message);
+            client.sendMessage(command);
         }
     }
 
-    public synchronized void subscribe(ClientHandler clientHandler) {
-        clients.add(clientHandler);
+    public synchronized void sendPrivateMessage(String receiver, Command command) throws IOException{
+        for (ClientHandler client : clients) {
+            if(client.getNickname().equals(receiver)){
+                client.sendMessage(command);
+                return;
+            }
+        }
     }
 
-    public synchronized void unsubscribe(ClientHandler clientHandler) {
+    public synchronized void subscribe(ClientHandler clientHandler) throws IOException {
+        clients.add(clientHandler);
+        List<String> users = getAllUsernames();
+        broadcastMessage(Command.updateUsersList(users));
+    }
+
+    private List<String> getAllUsernames() {
+//        return clients.stream()
+//                .map(ClientHandler::getNickname)
+//                .collect(Collectors.toList());
+
+        List<String> result = new ArrayList<>();
+        for (ClientHandler client : clients) {
+            result.add(client.getNickname());
+        }
+        return result;
+    }
+
+    public synchronized void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
+        List<String> users = getAllUsernames();
+        broadcastMessage(Command.updateUsersList(users));
     }
 }
