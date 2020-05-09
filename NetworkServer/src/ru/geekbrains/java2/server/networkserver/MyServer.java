@@ -12,6 +12,7 @@ import ru.geekbrains.java2.server.networkserver.clienthandler.ClientHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,19 +22,20 @@ public class MyServer {
     private final int port;
     private final List<ClientHandler> clients;
     private final AuthService authService;
+    private final DataBaseLogCatcher dblc = new DataBaseLogCatcher();
 
-    public MyServer(int port) {
+    public MyServer(int port) throws SQLException, ClassNotFoundException {
         this.port = port;
         this.clients = new ArrayList<>();
         this.authService = new BaseAuthService();
+        dblc.connect();
     }
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is running");
             authService.start();
-
-
+            dblc.connect();
             //noinspection InfiniteLoopStatement
             while (true) {
                 System.out.println("Waiting for client connection...");
@@ -48,11 +50,12 @@ public class MyServer {
                 }
             }
 
-        } catch (IOException e) {
+        } catch (IOException | SQLException | ClassNotFoundException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
         } finally {
             authService.stop();
+            dblc.disconnect();
         }
     }
 
