@@ -4,11 +4,13 @@ import ru.geekbrains.java2.client.Command;
 import ru.geekbrains.java2.client.command.AuthCommand;
 import ru.geekbrains.java2.client.command.BroadcastMessageCommand;
 import ru.geekbrains.java2.client.command.PrivateMessageCommand;
+import ru.geekbrains.java2.server.networkserver.DataBaseLogCatcher;
 import ru.geekbrains.java2.server.networkserver.MyServer;
 import ru.geekbrains.java2.server.networkserver.auth.AuthService;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLException;
 
 import static java.lang.Thread.sleep;
 import static ru.geekbrains.java2.server.networkserver.MessageConstant.*;
@@ -19,13 +21,15 @@ public class ClientHandler {
     private final MyServer serverInstance;
     private final AuthService authService;
     private final Socket clientSocket;
+    private DataBaseLogCatcher dblc = new DataBaseLogCatcher();
+
 
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private String nickname;
 
 
-    public ClientHandler(Socket clientSocket, MyServer myServer) {
+    public ClientHandler(Socket clientSocket, MyServer myServer) throws SQLException, ClassNotFoundException {
         this.clientSocket = clientSocket;
         this.serverInstance = myServer;
         this.authService = serverInstance.getAuthService();
@@ -100,9 +104,15 @@ public class ClientHandler {
             try {
                 sleep(TIMEOUT_CLOSE_CONNECTION);
                 if (!Thread.currentThread().isInterrupted()){
+                    dblc.insert("'Connection has been failed',");
                     closeConnection();
                 }
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | SQLException e) {
+                try {
+                    dblc.insert("'Client connected', ");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
                 System.out.println("Successful auth");
             }
         });
