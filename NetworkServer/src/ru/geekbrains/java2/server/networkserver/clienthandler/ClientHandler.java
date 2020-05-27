@@ -7,6 +7,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.*;
 
 import static ru.geekbrains.java2.server.networkserver.MessageConstant.*;
 
@@ -15,28 +16,38 @@ public class ClientHandler {
     private final MyServer serverInstance;
     private final AuthService authService;
     private final Socket clientSocket;
+    private static final Logger clientLogger = Logger.getLogger(ru.geekbrains.java2.server.networkserver.clienthandler.
+            ClientHandler.class.getName());
 
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
     private String nickname;
+    private Handler clientLogHandler = new FileHandler("NetworkServer/serverClientLog.log", true);
 
 
-    public ClientHandler(Socket clientSocket, MyServer myServer) {
+    public ClientHandler(Socket clientSocket, MyServer myServer) throws IOException {
         this.clientSocket = clientSocket;
         this.serverInstance = myServer;
         this.authService = serverInstance.getAuthService();
+        clientLogger.setLevel(Level.INFO);
+        clientLogger.addHandler(clientLogHandler);
+        clientLogHandler.setLevel(Level.INFO);
+        clientLogHandler.setFormatter(new SimpleFormatter());
     }
 
     public void handle() throws IOException {
         inputStream = new DataInputStream(clientSocket.getInputStream());
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
 
+
+
         new Thread(() -> {
             try {
                 authentication();
                 readMessages();
             } catch (IOException e) {
-                System.out.println("Connection has been failed");
+//                System.out.println("Connection has been failed");
+                clientLogger.log(Level.INFO, "Connection has been failed");
             } finally {
                 closeConnection();
             }
@@ -59,6 +70,8 @@ public class ClientHandler {
                 return;
             }
             serverInstance.broadcastMessage(String.format("%s: %s", nickname, message));
+            String logMessage = "User " + nickname + " have written message: *" + message + "*";
+            clientLogger.log(Level.INFO, logMessage);
         }
     }
 

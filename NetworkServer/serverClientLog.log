@@ -1,0 +1,6 @@
+мая 27, 2020 10:59:29 PM ru.geekbrains.java2.server.networkserver.clienthandler.ClientHandler readMessages
+INFO: User nickname1 have written message: *Hi all, guys!*
+мая 27, 2020 10:59:32 PM ru.geekbrains.java2.server.networkserver.clienthandler.ClientHandler readMessages
+INFO: User nickname1 have written message: *Bye!*
+мая 27, 2020 10:59:34 PM ru.geekbrains.java2.server.networkserver.clienthandler.ClientHandler lambda$handle$0
+INFO: Connection has been failed
